@@ -188,3 +188,25 @@ header .custom-logo {
   width: auto;
 }
 ```
+---
+
+## 5. Disable animation for banner and above the fold elements
+
+### 5.1 CSS
+
+Use this when animations or transitions on the hero banner or above-the-fold sections are causing CLS or jank during page load (especially on cached pages or slower devices).
+
+```css
+/* Disable animations for all above-the-fold hero sections */
+.cm-banner,
+.cm-banner *,
+.above-the-fold,
+.above-the-fold *,
+.hero,
+.hero * {
+  transition: none !important;
+  animation: none !important;
+}
+```
+
+---
