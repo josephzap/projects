@@ -203,7 +203,9 @@ Use this when animations or transitions on the hero banner or above-the-fold sec
 .above-the-fold,
 .above-the-fold *,
 .hero,
-.hero * {
+.hero *,
+.hero-bg,
+.hero-bg * {
   transition: none !important;
   animation: none !important;
 }
