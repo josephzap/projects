@@ -105,24 +105,46 @@ JS adds a class (`header-loaded`) to `<body>` as soon as the DOM is ready; CSS h
 Add this to `functions.php`:
 
 ```php
-// Fade-in header on page load - use DOMContentLoaded for faster, more reliable loading
 add_action( 'wp_footer', function() { ?>
 <script>
 (function() {
   function showHeader() {
-    document.body.classList.add("header-loaded");
+    // Avoid doing this twice
+    if (document.body.classList.contains('header-loaded')) return;
+    document.body.classList.add('header-loaded');
   }
 
-  // Show header as soon as DOM is ready (much faster than 'load' event)
+  function initHeaderReveal() {
+    // If browser supports the Font Loading API
+    if (document.fonts && document.fonts.ready) {
+      // Wait until all fonts are loaded
+      document.fonts.ready.then(function() {
+        showHeader();
+      }).catch(function() {
+        // If something goes wrong, still show the header
+        showHeader();
+      });
+
+      // Safety timeout: show header anyway after 3s
+      setTimeout(showHeader, 3000);
+    } else {
+      // Fallback for older browsers: wait for full page load
+      if (document.readyState === 'complete') {
+        showHeader();
+      } else {
+        window.addEventListener('load', showHeader);
+      }
+
+      // Extra safety fallback
+      setTimeout(showHeader, 3000);
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', showHeader);
+    document.addEventListener('DOMContentLoaded', initHeaderReveal);
   } else {
-    // DOM already ready
-    showHeader();
+    initHeaderReveal();
   }
-
-  // Fallback: show header after max 1 second even if DOMContentLoaded doesn't fire
-  setTimeout(showHeader, 1000);
 })();
 </script>
 <?php });
@@ -131,18 +153,16 @@ add_action( 'wp_footer', function() { ?>
 ### 3.2 CSS (Additional CSS or Theme Stylesheet)
 
 ```css
-/* Smooth header fade-in */
-header {
+/* Smooth header fade-in (Elementor header) */
+header.elementor-location-header {
   opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  /* Fallback: show header after 1.5s if JavaScript fails */
+  transition: opacity 0.6s ease-out;
+  /* Optional: CSS-only fallback if JS totally fails */
   animation: header-fallback 0.1s 1.5s forwards;
 }
 
-body.header-loaded header {
+body.header-loaded header.elementor-location-header {
   opacity: 1;
-  transform: translateY(0);
   animation: none; /* Disable fallback animation when JS works */
 }
 
@@ -150,12 +170,8 @@ body.header-loaded header {
 @keyframes header-fallback {
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
-
-/* If your theme wraps the main header in a different element (e.g. .site-header),
-   you can swap `header` for that selector instead. */
 ```
 
 ---
