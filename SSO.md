@@ -215,13 +215,13 @@ Use this when animations or transitions on the hero banner or above-the-fold sec
 ```css
 /* Disable animations for all above-the-fold hero sections */
 .cm-banner,
-.cm-banner *,
+.cm-banner *:not(button):not(button *):not(a):not(a *):not([role="button"]):not([role="button"] *),
 .above-the-fold,
-.above-the-fold *,
+.above-the-fold *:not(button):not(button *):not(a):not(a *):not([role="button"]):not([role="button"] *),
 .hero,
-.hero *,
+.hero *:not(button):not(button *):not(a):not(a *):not([role="button"]):not([role="button"] *),
 .hero-bg,
-.hero-bg * {
+.hero-bg *:not(button):not(button *):not(a):not(a *):not([role="button"]):not([role="button"] *) {
   transition: none !important;
   animation: none !important;
 }
