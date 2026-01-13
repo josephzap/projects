@@ -1,6 +1,6 @@
 (() => {
   // =========================================================
-  // PW Marketing Pros - Website Audit & QA (On-page)
+  // Website Audit & QA (On-page)
   // Console script: structured report + checklist + issues
   // + Phone Number Finder (lists + highlights + mismatch check)
   // =========================================================
